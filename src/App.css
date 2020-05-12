@@ -7,9 +7,13 @@
   align-content: left;
 }
 
+h5 {
+  margin: 0;
+}
+
 label {
-  display: block;
   font-weight: bold;
+  text-align: left;
   color: darkslategray;
   margin: 0.25rem 0 0.5rem 0;
 }
@@ -17,23 +21,73 @@ label {
 textarea {
   resize: none;
   padding: 0.5rem;
-  width: 400px;
   font-size: 1rem;
   border: 1px solid darkslategray;
   border-radius: 2px;
 }
 
+.large-input {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .termsBlock {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.termsBlock h5 {
+  margin: 0;
+}
+
+.term {
+  margin: 0 0.5rem;
+}
+
+.tagprompt {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  margin: 1rem 0;
-  text-align: left;
+  background-color: darkturquoise;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem 0.5rem;
 }
 
-.tagInput {
-  display: block;
-  background-color: darkslategrey;
-  color: white;
+.tagprompt input {
+  margin: 0 0.5rem;
+  outline: none;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  color: blue;
+}
+
+.tagsuggest {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  background-color: darkslateblue;
   border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+
+}
+
+.tagsuggest button {
+  display: inline;
+  font-weight: bold;
+  color: white;
+  background-color: darkslateblue;
+  outline: none;
+  border: none;
 }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import nlp from 'compromise';
 import './App.css';
+import TagPrompt from './TagPrompt';
+import TagSuggest from './TagSuggest';
 
 function App() {
   const [inputText, setInputText] = useState('');
@@ -11,66 +13,58 @@ function App() {
 
   const parseJson = (json) => {
     return json.map((match) => match.terms[0].text);
-  }
+  };
 
   const handleChange = (value) => {
     const doc = nlp(value);
-    const foundVerbs = parseJson(doc.verbs().json());
+
+    nlp.extend((doc, world) => {
+      world.addWords({
+        github: 'Organization',
+        linkedin: 'Organization',
+      });
+    });
+
+    const foundVerbs = parseJson(doc.verbs().toGerund().json());
     const foundNouns = parseJson(doc.nouns().json());
     const foundOrgs = parseJson(doc.organizations().json());
     const foundNames = parseJson(doc.people().json());
+
+    console.log(doc);
 
     setVerbs(foundVerbs);
     setNouns(foundNouns);
     setOrgs(foundOrgs);
     setNames(foundNames);
-    
+
     setInputText(value);
-  }
+  };
 
   return (
     <div className="App">
       <div className="large-input">
-        <label htmlFor='compromise-input'>A text input</label>
+        <label htmlFor="compromise-input">Your message</label>
         <textarea
-          id='compromise-input'
-          rows='10'
+          id="compromise-input"
+          rows="10"
           onChange={(e) => handleChange(e.target.value)}
           value={inputText}
         />
       </div>
       <div className="termsBlock">
-        <h5 style={{ color: 'blue' }}>Names:</h5>
-          {
-            names.length ?
-            names.map(name => <span className="term" style={{ color: 'blue' }}> {name} </span>
-            )
-            : null
-          }
+        {names.length
+          ? names.map((name) => <TagPrompt prompt={'Mention'} name={name} />)
+          : null}
       </div>
       <div className="termsBlock">
-        <h5 style={{ color: 'green' }}>Organizations:</h5>
-          {
-            orgs.length ?
-            orgs.map(org => <span className="term" style={{ color: 'green' }}> {org} </span>)
-            : null
-          }
+        {orgs.length
+          ? orgs.map((org) => <TagPrompt prompt={'Handle for'} name={org} />)
+          : null}
       </div>
+      <h5>Suggested Tags</h5>
       <div className="termsBlock">
-          <h5 style={{ color: 'orange' }}>Nouns:</h5>
-          {
-            nouns.length ?
-            nouns.map(noun => <span className="term" style={{ color: 'orange' }}> {noun} </span>)
-            : null
-          }
-      </div>
-      <div className="termsBlock">
-        <h5 style={{ color: 'red' }}>Verbs:</h5>
-          {
-            verbs.length ?
-            verbs.map(verb => <span className="term" style={{ color: 'red' }}> {verb} </span>)
-            : null
-          }
+        {nouns.length ? nouns.map((noun) => <TagSuggest tag={noun} />) : null}
+        {verbs.length ? verbs.map((verb) => <TagSuggest tag={verb} />) : null}
       </div>
     </div>
   );
