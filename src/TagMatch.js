@@ -15,8 +15,18 @@ function App() {
     return json.map((match) => match.terms[0].text);
   };
 
+  const genderNeutralPlugin = (Doc, world) => {
+    Doc.prototype.matchPronouns = function () {
+      this.replace('#Pronoun', 'they');
+      return this;
+    };
+  };
+
   const handleChange = (value) => {
+    nlp.extend(genderNeutralPlugin);
     const doc = nlp(value);
+    const scrubbed = nlp(value).matchPronouns().text();
+    console.log(scrubbed);
 
     nlp.extend((doc, world) => {
       world.addWords({
