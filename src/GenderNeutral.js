@@ -11,13 +11,36 @@ function GenderNeutral() {
   const genderNeutralPlugin = (Doc, world) => {
     Doc.prototype.matchPronouns = function () {
       this.not('it').contractions().expand();
-      this.match('she').lookAhead('^#Verb').replace('is', 'are');
-      this.match('he').lookAhead('^#Verb').replace('is', 'are');
-      this.match('she').lookAhead('^#Verb').replace('has', 'have');
-      this.match('he').lookAhead('^#Verb').replace('has', 'have');
-      this.not('it').match('#Pronoun').replaceWith('they');
+      this.not('(it|us|our)')
+        .match('#Pronoun')
+        .lookAhead('^#Verb')
+        .replace('is', 'are');
 
-      this.replace('#Possessive', 'their');
+      this.not('(it|us|our)')
+        .match('#Prounoun')
+        .lookAhead('^#Verb')
+        .replace('has', 'have');
+
+      this.not('is it').match('is (she|he)').replace('is', 'are');
+
+      this.match('#Verb').lookAhead('#Pronoun').replace('(him|her)', 'them');
+
+      this.not('(it|us|our|ours)')
+        .match('#Pronoun')
+        .replace('(she|he)', 'they');
+
+      this.not('(it|us|our|ours)')
+        .match('#Pronoun')
+        .replace('(her|his)', 'their');
+
+      // this.match('she').lookAhead('^#Verb').replace('is', 'are');
+      // this.match('he').lookAhead('^#Verb').replace('is', 'are');
+      // this.match('she').lookAhead('^#Verb').replace('has', 'have');
+      // this.match('he').lookAhead('^#Verb').replace('has', 'have');
+      // this.not('(it|us|our)').match('#Pronoun').replaceWith('they');
+
+      // this.not('(our|ours)').replace('#Possessive', 'their');
+
       this.not('#Gerund').match('#PresentTense').verbs().toInfinitive();
       return this;
     };
