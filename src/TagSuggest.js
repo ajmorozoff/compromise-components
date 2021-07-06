@@ -4,7 +4,7 @@ import './App.css';
 
 const TagSuggest = ({ tag, type }) => {
     return (
-        <div className={`tagsuggest ${type}`}>
+        <div className={`tagsuggest ${type}`} key={tag}>
             <div>
                 {tag}
             </div>

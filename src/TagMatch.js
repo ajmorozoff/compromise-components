@@ -3,6 +3,8 @@ import nlp from 'compromise';
 import './App.css';
 import TagPrompt from './TagPrompt';
 import TagSuggest from './TagSuggest';
+import {createTermsList} from './tags_utils';
+import {VERBS_DENY_LIST} from './tags_constants';
 
 function App() {
   const [inputText, setInputText] = useState('');
@@ -13,6 +15,8 @@ function App() {
   const parseJson = (json) => {
     return json.map((match) => match.terms[0].text.toLowerCase());
   };
+
+  const verbTagsDenyList = createTermsList(VERBS_DENY_LIST);
 
   nlp.extend((Doc, world) => {
     world.addWords({
@@ -26,7 +30,8 @@ function App() {
   const handleChange = (value) => {
     const doc = nlp(value);
 
-    const foundVerbs = parseJson(doc.verbs().toGerund().not('(loving|being)').json());
+    console.log('verb tags deny', verbTagsDenyList);
+    const foundVerbs = parseJson(doc.verbs().toGerund().not(verbTagsDenyList).json());
     const foundNouns = parseJson(doc.nouns().json());
     const foundOrgs = parseJson(doc.organizations().json());
     
