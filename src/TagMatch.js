@@ -6,46 +6,33 @@ import TagSuggest from './TagSuggest';
 
 function App() {
   const [inputText, setInputText] = useState('');
-  const [names, setNames] = useState([]);
+  const [orgs, setOrgs] = useState([]);
   const [nouns, setNouns] = useState([]);
   const [verbs, setVerbs] = useState([]);
-  const [orgs, setOrgs] = useState([]);
 
   const parseJson = (json) => {
-    return json.map((match) => match.terms[0].text);
+    return json.map((match) => match.terms[0].text.toLowerCase());
   };
 
-  const genderNeutralPlugin = (Doc, world) => {
-    Doc.prototype.matchPronouns = function () {
-      this.replace('#Pronoun', 'they');
-      return this;
-    };
-  };
+  nlp.extend((Doc, world) => {
+    world.addWords({
+      github: 'Organization',
+      linkedin: 'Organization',
+    });
+    world.addWords({hike: 'Verb', fish: 'Verb'});
+    //world.addConjugations({ hike: { Gerund: 'hiking' }, fish: {Gerund: 'fishing'}});
+  });
 
   const handleChange = (value) => {
-    nlp.extend(genderNeutralPlugin);
     const doc = nlp(value);
-    const scrubbed = nlp(value).matchPronouns().text();
-    console.log(scrubbed);
 
-    nlp.extend((doc, world) => {
-      world.addWords({
-        github: 'Organization',
-        linkedin: 'Organization',
-      });
-    });
-
-    const foundVerbs = parseJson(doc.verbs().toGerund().json());
+    const foundVerbs = parseJson(doc.verbs().toGerund().not('(loving|being)').json());
     const foundNouns = parseJson(doc.nouns().json());
     const foundOrgs = parseJson(doc.organizations().json());
-    const foundNames = parseJson(doc.people().json());
-
-    console.log(doc);
-
+    
     setVerbs(foundVerbs);
     setNouns(foundNouns);
     setOrgs(foundOrgs);
-    setNames(foundNames);
 
     setInputText(value);
   };
@@ -62,19 +49,14 @@ function App() {
         />
       </div>
       <div className="termsBlock">
-        {names.length
-          ? names.map((name) => <TagPrompt prompt={'Mention'} name={name} />)
-          : null}
-      </div>
-      <div className="termsBlock">
         {orgs.length
-          ? orgs.map((org) => <TagPrompt prompt={'Handle for'} name={org} />)
+          ? orgs.map((org) => <TagPrompt prompt={'Mention'} name={org} />)
           : null}
       </div>
       <h5>Suggested Tags</h5>
       <div className="termsBlock">
-        {nouns.length ? nouns.map((noun) => <TagSuggest tag={noun} />) : null}
-        {verbs.length ? verbs.map((verb) => <TagSuggest tag={verb} />) : null}
+        {nouns.length ? nouns.map((noun) => <TagSuggest tag={noun} type={"noun"}/>) : null}
+        {verbs.length ? verbs.map((verb) => <TagSuggest tag={verb} type={"verb"}/>) : null}
       </div>
     </div>
   );

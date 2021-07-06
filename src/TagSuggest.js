@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import nlp from 'compromise';
 import './App.css';
 
-const TagSuggest = ({ tag }) => {
+const TagSuggest = ({ tag, type }) => {
     return (
-        <div className='tagsuggest'>
+        <div className={`tagsuggest ${type}`}>
             <div>
                 {tag}
             </div>

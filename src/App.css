@@ -74,13 +74,19 @@ textarea {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  background-color: darkslateblue;
   border-radius: 4px;
   color: white;
   font-weight: bold;
   padding: 0.5rem 1rem;
   margin: 0 0.5rem;
+}
 
+.verb {
+  background-color: darkslateblue;
+}
+
+.noun {
+  background-color: green;
 }
 
 .tagsuggest button {
